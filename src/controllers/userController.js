@@ -18,16 +18,15 @@ module.exports = {
         res.redirect("/users/signUp");
       } else {
         const sgMail = require('@sendgrid/mail');
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        const msg = {
-          to: req.body.email,
-          from: 'rimal.binaya@gmail.com',
-          subject: 'Confirmation Email',
-          text: 'Press the button to authenticate',
-          html: '<button>Confirm</button>',
-        };
-        sgMail.send(msg);
-
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      const msg = {
+        to: req.body.email,
+        from: 'rimal.binaya@gmail.com',
+        subject: 'Email Confirmation',
+        text: 'Thanks for creqting your account click the button below to confirm',
+        html: '<button>Confirm</button>',
+      };
+      sgMail.send(msg);
         passport.authenticate("local")(req, res, () => {
           req.flash("notice", "You've successfully signed in!");
           res.redirect("/");
