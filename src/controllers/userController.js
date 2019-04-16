@@ -25,15 +25,15 @@ module.exports = {
           res.redirect("/");
         });
         const sgMail = require('@sendgrid/mail');
-        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-        const msg = {
-        to: req.body.email,
-        from: 'rimal.binaya@gmail.com',
-        subject: 'Email Confirmation',
-        text: "You've successfully created an account on Blocipedia",
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const msg = {
+    to: req.body.email,
+    from: 'rimal.binaya@gmail.com',
+    subject: 'Confirmation Email',
+    text: 'You have successfully created an account in blocipedia!',
 
-        };
-        sgMail.send(msg);
+  };
+  sgMail.send(msg);
 
 
       };
