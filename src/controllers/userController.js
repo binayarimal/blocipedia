@@ -25,6 +25,7 @@ module.exports = {
           res.redirect("/");
         });
         const sgMail = require('@sendgrid/mail');
+
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
     to: req.body.email,
@@ -33,7 +34,13 @@ module.exports = {
     text: 'You have successfully created an account in blocipedia!',
 
   };
+  try {
   sgMail.send(msg);
+  } catch(err) {
+   console.log(err)
+ };
+
+
 
 
       };
