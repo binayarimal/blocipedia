@@ -45,6 +45,18 @@ updateWiki(req, updatedWiki, callback){
             callback(err);
           });
         });
-    }
-
+    },
+    deleteWiki(req, callback){
+        // #1
+        return Wiki.findById(req.params.id)
+        .then((wiki) => {
+            wiki.destroy()
+            .then((res) => {
+              callback(null);
+            });
+        })
+        .catch((err) => {
+          callback(err);
+        });
+      },
 }

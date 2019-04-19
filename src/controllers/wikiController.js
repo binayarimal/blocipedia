@@ -65,5 +65,16 @@ update(req,res,next){
   })
 
 
-}
+},
+destroy(req, res, next){
+
+    // #1
+        wikiQueries.deleteWiki(req, (err) => {
+          if(err){
+            res.redirect(err, `/wikis/${req.params.id}`)
+          } else {
+            res.redirect(303, "/wikis")
+          }
+        });
+      },
 }
