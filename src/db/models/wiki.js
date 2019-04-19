@@ -5,8 +5,17 @@ module.exports = (sequelize, DataTypes) => {
     title: {
     type:  DataTypes.STRING,
     allowNull:false},
-    body: DataTypes.STRING,
-    private: DataTypes.BOOLEAN
+
+    body: {
+    type:  DataTypes.STRING,
+    allowNull:false},
+
+    userId: {
+    type:  DataTypes.INTEGER,
+    allowNull:false},
+
+    private: DataTypes.BOOLEAN,
+
   }, {});
   Wiki.associate = function(models) {
     Wiki.belongsTo(models.User, {

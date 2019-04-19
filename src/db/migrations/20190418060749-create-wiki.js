@@ -17,6 +17,17 @@ module.exports = {
       private: {
         type: Sequelize.BOOLEAN
       },
+      userId: {
+      type: Sequelize.INTEGER,
+      onDelete: "CASCADE", // delete post if parent topic is deleted
+      allowNull: false,    // validation to prevent null value
+      references: {        // association information
+        model: "Users",   // table name
+        key: "id",         // attribute to use
+        as: "userId"      // reference as topicId
+      }
+    },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
