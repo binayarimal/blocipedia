@@ -6,7 +6,7 @@ module.exports = {
      "Users",
      "role",
      {
-       type: Sequelize.INTEGER,
+       type: Sequelize.STRING,
        allowNull: false,
 
 // #1
