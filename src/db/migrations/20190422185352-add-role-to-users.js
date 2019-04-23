@@ -10,7 +10,7 @@ module.exports = {
        allowNull: false,
 
 // #1
-       defaultValue: 0
+       defaultValue: "admin"
      }
    );
   },

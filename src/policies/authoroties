@@ -12,7 +12,7 @@ module.exports = class authorities {
   }
 
   _isAdmin() {
-    return this.user && this.user.role == 1;
+    return this.user && this.user.role == "admin";
   }
 
  // #3
