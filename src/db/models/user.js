@@ -11,7 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      password: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
+  role: {
+     type: DataTypes.STRING,
+     allowNull: false,
+     defaultValue: "member"
+   }
   }, {});
   User.associate = function(models) {
     User.hasMany(models.Wiki, {
@@ -19,5 +24,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "CASCADE"
     });
   };
+  User.prototype.isAdmin = function() {
+     return this.role === 1;
+   };
   return User;
 };
