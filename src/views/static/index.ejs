@@ -23,6 +23,20 @@
           <section class="col-lg-6">
             <h4 class="card-title">Premium</h4>
             <p class="card-text">Get all the benefis as a premium user</p>
+            <form action="/checkout" method="POST">
+              <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="pk_test_m8YN4IfIHbdl5dB1CZfxHYSd00VED9JjLf"
+                data-amount="1500"
+                data-name="Premium"
+                data-description="Upgrade your account to premium"
+                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                data-locale="auto">
+              </script>
+              <script>document.getElementsByClassName('stripe-button-el')[0].style.display='none'</script>
+                <button type="submit" class="btn btn-primary">Upgrade</button>
+            </form>
+
           </section>
 
 
