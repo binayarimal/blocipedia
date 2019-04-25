@@ -1,29 +1,25 @@
 module.exports ={
-upgradePage(req, res, next){
-res.render("upgrade/upgradePage")
+
+upgrade(req,res,next){
+  const stripe = require("stripe")(process.env.STRIPE_API_KEY);
+   const amount = 1500;
+stripe.customers.create(
+  {email:req.body.stripeEmail,
+  source:req.body.stripeToken
+}).then(customer => stripe.charges.create({
+  amount:amount,
+  description: "Upgrade to Premium Plan",
+  currency:"usd",
+  customer:customer.id,
+}).then((charges) =>{
+    req.flash("notice","You've successfully updated you account to Premium")
+    res.redirect("/");
+
+})
+
+)
+
 },
-checkout(req,res,next){
-  const stripe = require("stripe")("pk_test_m8YN4IfIHbdl5dB1CZfxHYSd00VED9JjLf");
-
-  (async () => {
-    const session = await stripe.checkout.sessions.create({
-      success_url: '/wikis',
-      cancel_url: '/wikis',
-      payment_method_types: ['card'],
-      line_items: [{
-        amount: 1500,
-        currency: 'usd',
-        name: 'Premium Upgrade',
-      }]
-    });
-  })();
-const striped = Stripe('pk_test_m8YN4IfIHbdl5dB1CZfxHYSd00VED9JjLf');
-  striped.redirectToCheckout({
-  sessionId: '{{CHECKOUT_SESSION_ID}}'
-}).then( (result)=> {
-console.log(result)
-});
-
-}
+downgrade(req, res, next){}
 
 }

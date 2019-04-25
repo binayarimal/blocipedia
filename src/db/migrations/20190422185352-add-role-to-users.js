@@ -6,11 +6,11 @@ module.exports = {
      "Users",
      "role",
      {
-       type: Sequelize.STRING,
+       type: Sequelize.INTEGER,
        allowNull: false,
 
 // #1
-       defaultValue: "member"
+       defaultValue: "0"
      }
    );
   },

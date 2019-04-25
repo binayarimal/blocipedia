@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     allowNull: false
   },
   role: {
-     type: DataTypes.STRING,
+     type: DataTypes.INTEGER,
      allowNull: false,
-     defaultValue: "member"
+     defaultValue: 0
    }
   }, {});
   User.associate = function(models) {
@@ -24,8 +24,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "CASCADE"
     });
   };
-  User.prototype.isAdmin = function() {
-     return this.role === "admin";
+  User.prototype.isPremium = function() {
+     return this.role === 1;
    };
   return User;
 };

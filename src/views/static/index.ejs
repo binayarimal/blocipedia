@@ -3,7 +3,7 @@
    <% include ./partials/head.ejs %>
   </head>
   <body>
-
+<% include ../static/partials/messages.ejs %>
       <main class="container">
    <% include ./partials/navbar.ejs %>
         <!-- Jumbotron Header -->
@@ -23,7 +23,8 @@
           <section class="col-lg-6">
             <h4 class="card-title">Premium</h4>
             <p class="card-text">Get all the benefis as a premium user</p>
-            <form action="/checkout" method="POST">
+            <% if(currentUser){ if (currentUser.isPremium() === false){%>
+            <form action="/upgrade" method="POST">
               <script
                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                 data-key="pk_test_m8YN4IfIHbdl5dB1CZfxHYSd00VED9JjLf"
@@ -36,7 +37,10 @@
               <script>document.getElementsByClassName('stripe-button-el')[0].style.display='none'</script>
                 <button type="submit" class="btn btn-primary">Upgrade</button>
             </form>
-
+        <% }else{ %>
+            <form action="/downgrade" method="POST">
+           <button type="submit" class="btn btn-primary">Standard</button>  <%} } %>
+         </form>
           </section>
 
 

@@ -21,6 +21,20 @@ module.exports = {
     .catch((err) => {
       callback(err);
     })
-  }
+  },
+  upgrade(userId, callback){
+      User.update(
+        { role: 1 },
+        { where: {id : userId}
+    }).then( () => {callback(null)})
+       .catch(err=> callback(err))
+},
+  downgrade(userId, callback){
+    User.update(
+      { role: 0 },
+      { where: {id : userId}
+  }).then( () => {callback(null)})
+     .catch(err=> callback(err))
+},
 
 }

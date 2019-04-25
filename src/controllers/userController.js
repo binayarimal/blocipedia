@@ -21,19 +21,19 @@ module.exports = {
         });
         const sgMail = require('@sendgrid/mail');
 
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  const msg = {
-    to: req.body.email,
-    from: 'rimal.binaya@gmail.com',
-    subject: 'Confirmation Email',
-    text: 'You have successfully created an account in blocipedia!',
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+        const msg = {
+          to: req.body.email,
+          from: 'rimal.binaya@gmail.com',
+          subject: 'Confirmation Email',
+          text: 'You have successfully created an account in blocipedia!',
 
-  };
-  try {
-  sgMail.send(msg);
-  } catch(err) {
-   console.log(err)
- };
+        };
+        try {
+          sgMail.send(msg);
+        } catch(err) {
+          console.log(err)
+        };
 
 
 
@@ -43,9 +43,9 @@ module.exports = {
 
   },
   signInForm(req, res, next){
-     res.render("users/signIn");
-   },
-   signIn(req, res, next){
+    res.render("users/signIn");
+  },
+  signIn(req, res, next){
     passport.authenticate("local")(req, res, function () {
       if(!req.user){
         req.flash("notice", "Sign in failed. Please try again.")
@@ -60,5 +60,41 @@ module.exports = {
     req.logout();
     req.flash("notice", "You've successfully signed out!");
     res.redirect("/");
+  },
+  upgrade(req,res,next){
+    const stripe = require("stripe")(process.env.STRIPE_API_KEY);
+    const amount = 1500;
+    stripe.customers.create(
+      {email:req.body.stripeEmail,
+        source:req.body.stripeToken
+      })
+      .then(customer => stripe.charges.create({
+        amount:amount,
+        description: "Upgrade to Premium Plan",
+        currency:"usd",
+        customer:customer.id,
+      }).then((charges) =>{
+        userQueries.upgrade(req.user.id, (err)=>{
+          if(err)
+          {req.flash("error", "Could not upgrade your account due to error");
+          res.redirect("/")
+        }else {
+            req.flash("notice","You've successfully updated you account to Premium");
+            res.redirect("/");}
+          })
+        })
+      )
+    },
+    downgrade(req, res, next){
+      userQueries.downgrade(req.user.id, (err) => {
+        if (err)
+        {req.flash("error", "Could not convert user to Standard");
+           res.redirect("/")}
+        else {
+          req.flash("notice", "You've successfully changed your account to standard");
+          res.redirect("/")
+        }
+      })
+    }
+
   }
-}
