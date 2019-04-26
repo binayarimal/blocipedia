@@ -1,28 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <% include ../static/partials/head.ejs %>
-  </head>
-  <body>
-    <% include ../static/partials/navbar.ejs %>
+<head>
+  <% include ../static/partials/head.ejs %>
+</head>
+<body>
+  <% include ../static/partials/navbar.ejs %>
 
-    <main class="container">
+  <main class="container">
 
-      <h1><%= wiki.title %>  </h1>
-      <% if(currentUser) { %>
+    <h1><%= wiki.title %>  </h1>
+    <% if(currentUser) {
+      if(currentUser.id===wiki.userId){
+        %>
 
-     <a href="/wikis/<%= wiki.id %>/edit" class="btn btn-warning">Edit</a>
+        <a href="/wikis/<%= wiki.id %>/edit" class="btn btn-warning">Edit</a>
 
-     <form style="display:initial" action="/wikis/<%= wiki.id %>/destroy" method="post">
-       <button type="submit" class="btn btn-danger">Delete</button>
-     </form>
- <% } %>
+        <form style="display:initial" action="/wikis/<%= wiki.id %>/destroy" method="post">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+        <% };
+         if(currentUser.isPremium() === true){
+         if (wiki.isPrivate()===false){ %>
+          <form style="display:initial" action="/wikis/<%= wiki.id %>/private" method="post">
+            <button type="submit" class="btn btn-primary">Private</button>
+          </form>
+          <%  } else { %>
+            <form style="display:initial" action="/wikis/<%= wiki.id %>/public" method="post">
+              <button type="submit" class="btn btn-primary">public</button>
+            </form>
+        <% };};} %>
 
       <p><%= wiki.body %></p>
       <hr>
-   </main>
+    </main>
 
     <% include ../static/partials/baseScripts.ejs %>
 
   </body>
-</html>
+  </html>

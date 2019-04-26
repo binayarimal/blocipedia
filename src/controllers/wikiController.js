@@ -97,5 +97,25 @@ destroy(req, res, next){
          res.redirect(303, "/wikis")
        }
      });
-   }
+   },
+private(req, res, next){
+  wikiQueries.privateWiki(req.params.id,(err)=>{
+    if(err){
+      req.flash("error","Error: Unable to turn this page private");
+      res.redirect(`/wikis/${req.params.id}`)}
+    else{
+      req.flash("notice","You've privated this page, only you can view it")};
+      res.redirect(`/wikis/${req.params.id}`)
+  })
+},
+public(req, res, next){
+  wikiQueries.publicWiki(req.params.id,(err)=>{
+    if(err){
+      req.flash("error","Error: Unable to turn this page public");
+      res.redirect(`/wikis/${req.params.id}`)}
+    else{
+      req.flash("notice","You've made this page public")};
+      res.redirect(`/wikis/${req.params.id}`)
+  })
+},
 }

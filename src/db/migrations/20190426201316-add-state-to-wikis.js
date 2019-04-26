@@ -3,17 +3,17 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
-     "Users",
-     "role",
+     "Wikis",
+     "state",
      {
-       type: Sequelize.INTEGER,
+       type: Sequelize.STRING,
        allowNull: false,
-       defaultValue: "0"
+       defaultValue: "public"
      }
    );
   },
 
   down: (queryInterface, Sequelize) => {
-   return queryInterface.removeColumn("Users", "role");
+  return queryInterface.removeColumn("Wikis", "state");
   }
 };

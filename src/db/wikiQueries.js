@@ -69,4 +69,18 @@ module.exports = {
         callback(err);
       });
     },
+    privateWiki(wikiId, callback){
+      Wiki.update(
+        { state: "private" },
+        { where: {id : wikiId}
+    }).then(()=>{callback(null)})
+    .catch(err => callback(err))
+  },
+  publicWiki(wikiId, callback){
+    Wiki.update(
+      { state: "public" },
+      { where: {id : wikiId}
+  }).then(()=>{callback(null)})
+  .catch(err => callback(err))
+  }
   }

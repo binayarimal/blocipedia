@@ -14,7 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     type:  DataTypes.INTEGER,
     allowNull:false},
 
-    private: DataTypes.BOOLEAN,
+    state: {
+       type: DataTypes.STRING,
+       allowNull: false,
+       defaultValue: "public"
+     }
 
   }, {});
   Wiki.associate = function(models) {
@@ -23,5 +27,8 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: "CASCADE"
     });
   };
+  Wiki.prototype.isPrivate = function() {
+     return this.state === "private";
+   };
   return Wiki;
 };
