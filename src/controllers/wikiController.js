@@ -1,6 +1,6 @@
 const wikiQueries = require("../db/wikiQueries");
 const Authorizer = require("../policies/authoroties");
-
+const markdown = require( "markdown" ).markdown;
 module.exports = {
 wikiPage(req, res, next){
 wikiQueries.getAllWikis((err,wikis) =>{
@@ -27,8 +27,8 @@ create(req, res, next){
   const authorized=new Authorizer(req.user).create();
   if(authorized){
           let newWiki = {
-            title: req.body.title,
-            body: req.body.body,
+            title: markdown.toHTML(req.body.title),
+            body: markdown.toHTML(req.body.body),
             userId:req.user.id,
           }
 
@@ -52,13 +52,11 @@ if(err || wiki === null){
 } else{
   res.render("wikis/show", {wiki})
 }
-
-  })
+})
 },
 edit(req,res,next){
-
   wikiQueries.getWiki(req.params.id,(err,wiki)=>{
-if(err || wiki === null){
+  if(err || wiki === null){
   res.redirect(404, "/")
 } else{
   const authorized=new Authorizer(req.user, wiki).edit();
@@ -67,10 +65,7 @@ if(err || wiki === null){
   else{
     req.flash("notice", "You are not authorized to do that.");
     res.redirect( `/wikis/${req.params.id}`);}
-
   }
-
-
   })
 },
 update(req,res,next){
@@ -81,15 +76,10 @@ update(req,res,next){
     }else{
       res.redirect(`/wikis/${req.params.id}`)
     }
-
-
   })
-
-
 },
 
 destroy(req, res, next){
-
      wikiQueries.deleteWiki(req, (err) => {
        if(err){
          res.redirect(err, `/wikis/${req.params.id}`)

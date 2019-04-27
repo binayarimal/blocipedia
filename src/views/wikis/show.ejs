@@ -8,7 +8,7 @@
 
   <main class="container">
 
-    <h1><%= wiki.title %>  </h1>
+    <h1><%-wiki.title%>  </h1>
     <% if(currentUser) {
       if(currentUser.id===wiki.userId){
         %>
@@ -30,7 +30,7 @@
             </form>
         <% };};} %>
 
-      <p><%= wiki.body %></p>
+      <p><%- wiki.body %></p>
       <hr>
     </main>
 
