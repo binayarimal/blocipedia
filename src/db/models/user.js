@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       onDelete: "CASCADE"
     });
+    User.hasMany(models.Collaborator, {
+      foreignKey: "userId",
+      onDelete: "CASCADE"
+    });
   };
   User.prototype.isPremium = function() {
      return this.role === 1;

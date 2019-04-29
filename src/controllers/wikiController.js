@@ -3,15 +3,15 @@ const Authorizer = require("../policies/authoroties");
 const markdown = require( "markdown" ).markdown;
 module.exports = {
 wikiPage(req, res, next){
-wikiQueries.getAllWikis((err,wikis) =>{
-if (err){
-  console.log(err);
-    res.redirect(500, "/");
-}else{
-  res.render("wikis/wikiPage", {wikis})
-}
+  wikiQueries.getAllWikis((err,wikis) =>{
+    if (err){
+      console.log(err);
+      res.redirect(500, "/");
+    }else{
+      res.render("wikis/wikiPage", {wikis})
+    };
 
-})
+  })
 },
 createPage(req,res,next){
   const authorized=new Authorizer(req.user).new();
@@ -26,50 +26,69 @@ createPage(req,res,next){
 create(req, res, next){
   const authorized=new Authorizer(req.user).create();
   if(authorized){
-          let newWiki = {
-            title: markdown.toHTML(req.body.title),
-            body: markdown.toHTML(req.body.body),
-            userId:req.user.id,
-          }
+    let newWiki = {
+      title:req.body.title,
+      body: req.body.body,
+      userId:req.user.id,
+    }
 
-          wikiQueries.createWiki(newWiki, (err, wiki) => {
-            if(err){
-              res.redirect(500, "wikis/createPage");
-            } else {
-              res.redirect(303, `/wikis/${wiki.id}`);
-            }
-          });
-}else{
-     req.flash("notice", "You are not authorized to do that.");
-     res.redirect("/wikis");}
+    wikiQueries.createWiki(newWiki, (err, wiki) => {
+      if(err){
+        res.redirect(500, "wikis/createPage");
+      } else {
+        res.redirect(303, `/wikis/${wiki.id}`);
+      }
+    });
+  }else{
+    req.flash("notice", "You are not authorized to do that.");
+    res.redirect("/wikis");}
 
 },
 show(req,res, next){
-  wikiQueries.getWiki(req.params.id,(err,wiki)=>{
-if(err || wiki === null){
-  res.redirect(404, "/")
-  console.log(req.params.id)
-} else{
-  res.render("wikis/show", {wiki})
-}
-})
+  wikiQueries.getWiki(req.params.id,(err,thisWiki)=>{
+    if(err || thisWiki === null){
+      res.redirect(404, "/")
+      console.log(req.params.id)
+    } else{
+      wikiQueries.findCollaborators(req,(err,collaborators)=>{
+        let collaborator;
+
+        if (collaborators){
+          collaborators.forEach((collab)=>{
+            if(collab.userId === req.user.id){
+              collaborator = true
+            }
+          })
+        }
+        const wiki = {
+          title:markdown.toHTML(thisWiki.title),
+          body:markdown.toHTML(thisWiki.body),
+          id:thisWiki.id,
+          userId:thisWiki.userId,
+          state:thisWiki.state,
+          private:thisWiki.isPrivate(),
+          collaborator:collaborator,
+        }
+        res.render("wikis/show", {wiki})
+      })
+    }
+  })
 },
 edit(req,res,next){
   wikiQueries.getWiki(req.params.id,(err,wiki)=>{
-  if(err || wiki === null){
-  res.redirect(404, "/")
-} else{
-  const authorized=new Authorizer(req.user, wiki).edit();
-  if(authorized){
-  res.render("wikis/edit", {wiki})}
-  else{
-    req.flash("notice", "You are not authorized to do that.");
-    res.redirect( `/wikis/${req.params.id}`);}
-  }
-  })
+    if(err || wiki === null){
+      res.redirect(404, "/")
+    } else{
+      const authorized=new Authorizer(req.user, wiki).edit();
+      if(authorized){
+        res.render("wikis/edit", {wiki})}
+        else{
+          req.flash("notice", "You are not authorized to do that.");
+          res.redirect( `/wikis/${req.params.id}`);}
+        }
+      })
 },
 update(req,res,next){
-
   wikiQueries.updateWiki(req, req.body,(err,wiki)=>{
     if(err || wiki == null){
       res.redirect(401, `/wikis/${req.params.id}/edit`)
@@ -78,7 +97,6 @@ update(req,res,next){
     }
   })
 },
-
 destroy(req, res, next){
      wikiQueries.deleteWiki(req, (err) => {
        if(err){
@@ -106,6 +124,18 @@ public(req, res, next){
     else{
       req.flash("notice","You've made this page public")};
       res.redirect(`/wikis/${req.params.id}`)
+  })
+},
+collab(req,res,next){
+
+  wikiQueries.addCollaborator(req, (err, collaborator) => {
+    if(err){
+      req.flash("error", "Could not find collaborator with that e-mail id");
+      res.redirect(`/wikis`);
+      console.log(err)
+    } else {
+        req.flash("notice", `You've successfully added ${collaborator.email} as a collaborator`);
+        res.redirect("/");}
   })
 },
 }

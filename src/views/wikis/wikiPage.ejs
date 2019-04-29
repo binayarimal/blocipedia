@@ -24,8 +24,17 @@
               <a href="/wikis/<%= wiki.id %>"> <%- wiki.title %> </a>
             </li>
             <% }else{
+              let collaborator;
+            
+              wiki.collaborators.forEach((collab)=>{
+                if(collab.userId === currentUser.id){
+                  collaborator = true;
+                }
+
+              })
               if(currentUser){
-                if(currentUser.id===wiki.userId){ %>
+
+                if(currentUser.id===wiki.userId || collaborator === true){ %>
                   <li class="list-group-item">
                     <a href="/wikis/<%= wiki.id %>"> <%- wiki.title %> </a>
                   </li>

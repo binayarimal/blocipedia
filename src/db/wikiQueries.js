@@ -1,5 +1,7 @@
 const Wiki = require("./models").Wiki;
-const Authorizer = require("../policies/authoroties")
+const Authorizer = require("../policies/authoroties");
+const Collaborator = require("./models").Collaborator;
+const User = require("./models").User;
 module.exports = {
   getAllWikis(callback){
     return Wiki.all()
@@ -82,5 +84,35 @@ module.exports = {
       { where: {id : wikiId}
   }).then(()=>{callback(null)})
   .catch(err => callback(err))
-  }
+},
+addCollaborator(req, callback){
+
+User.findOne({where:{email:req.body.collaborator}})
+.then((user)=>{
+  return Collaborator.create(
+ {email:user.email,
+  userId:user.id,
+  wikiId:req.params.id})
+  .then((collaborator) => {
+    callback(null, collaborator);
+  })
+})
+  .catch((err) => {
+    callback(err);
+  })
+},
+findCollaborators(req, callback){
+   Collaborator.findAll({where:{wikiId:req.params.id}})
+  .then((collaborators) => {
+
+     callback(null, collaborators);
+     console.log(collaborators)
+
+  })
+  .catch((err)=> {
+    callback(err);
+    console.log(err)
+  })
+},
+ 
   }
