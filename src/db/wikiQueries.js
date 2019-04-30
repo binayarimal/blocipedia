@@ -38,8 +38,9 @@ module.exports = {
         return callback("Wiki not found");
       }
       const authorized=new Authorizer(req.user, wiki).update();
+      let collabAuthorized = true;
 
-      if (authorized){
+      if (authorized || collabAuthorized === true){
         wiki.update(updatedWiki, {
           fields: Object.keys(updatedWiki)
         })

@@ -2,7 +2,8 @@ const wikiQueries = require("../db/wikiQueries");
 const Authorizer = require("../policies/authoroties");
 const markdown = require( "markdown" ).markdown;
 const collabQueries = require("../db/collabQueries");
-const authCollabs = require("../policies/collabPolicies")
+
+
 module.exports = {
 wikiPage(req, res, next){
 wikiQueries.getAllWikis((err,allWikis) =>{
@@ -45,8 +46,8 @@ create(req, res, next){
   const authorized=new Authorizer(req.user).create();
   if(authorized){
           let newWiki = {
-            title: markdown.toHTML(req.body.title),
-            body: markdown.toHTML(req.body.body),
+            title:req.body.title,
+            body: req.body.body,
             userId:req.user.id,
           }
 
@@ -63,26 +64,57 @@ create(req, res, next){
 
 },
 show(req,res, next){
-  wikiQueries.getWiki(req.params.id,(err,wiki)=>{
-if(err || wiki === null){
-  res.redirect(404, "/")
-  console.log(req.params.id)
-} else{
-  res.render("wikis/show", {wiki})
-}
-})
-},
+  wikiQueries.getWiki(req.params.id,(err,thisWiki)=>{
+    if(err || thisWiki === null){
+      res.redirect(404, "/wikis")
+      console.log(req.params.id)
+    }
+    else{
+      collabQueries.getCollaborators(req.user.id, (err,collaborators)=>{
+
+        let wiki = {
+          title:markdown.toHTML(thisWiki.title),
+          body:markdown.toHTML(thisWiki.body),
+          id:thisWiki.id,
+          userId:thisWiki.userId,
+          state:thisWiki.state,
+          private:thisWiki.isPrivate(),
+          collaborators:false}
+          if(err){
+            console.log(err)
+            req.flash("error", "unable to get collabs")
+            res.render("wikis/show", {wiki})
+          } else{
+            wiki.collaborators = collaborators;
+            res.render("wikis/show", {wiki})
+          }
+        })
+      }
+    })
+
+  },
 edit(req,res,next){
   wikiQueries.getWiki(req.params.id,(err,wiki)=>{
   if(err || wiki === null){
   res.redirect(404, "/")
 } else{
-  const authorized=new Authorizer(req.user, wiki).edit();
-  if(authorized){
-  res.render("wikis/edit", {wiki})}
-  else{
-    req.flash("notice", "You are not authorized to do that.");
-    res.redirect( `/wikis/${req.params.id}`);}
+    let collabAuthorized ;
+  collabQueries.getCollaborator(req,(err,collab)=>{
+    if (err || collab === null){
+     collabAuthorized = false
+   } else {
+     collabAuthorized = true;
+   };
+   const authorized = new Authorizer(req.user,wiki).edit()
+     if(authorized || collabAuthorized === true){
+     res.render("wikis/edit", {wiki})}
+     else{
+       req.flash("notice", "You are not authorized to do that.");
+       res.redirect( `/wikis/${req.params.id}`);}
+
+  })
+
+
   }
   })
 },

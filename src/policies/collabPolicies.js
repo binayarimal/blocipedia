@@ -1,13 +1,5 @@
 const ApplicationPolicy = require("./authoroties");
-
+const Collaborators = require("../db/models").Collaborator;
 module.exports = class collabPolicy extends ApplicationPolicy {
 
-isCollaborator(){
-  record.collaborators.forEach((collab)=>{
-    if (collab.id===user.id){
-      return true
-    }
-
-  })
-}
 }

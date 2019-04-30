@@ -32,7 +32,7 @@
                     collab = true
                   }
                 })
-                if(wiki.belongsToUser() || collab){ %>
+                if(wiki.userId === currentUser.id || collab ){ %>
 
                   <li class="list-group-item">
                     <a href="/wikis/<%= wiki.id %>"> <%- wiki.title %> </a>
