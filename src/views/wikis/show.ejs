@@ -12,29 +12,32 @@
     <% if(currentUser) {
       if(currentUser.id===wiki.userId){
         %>
-
         <a href="/wikis/<%= wiki.id %>/edit" class="btn btn-warning">Edit</a>
-
         <form style="display:initial" action="/wikis/<%= wiki.id %>/destroy" method="post">
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>
         <% };
-         if(currentUser.isPremium() === true){
-         if (wiki.isPrivate()===false){ %>
-          <form style="display:initial" action="/wikis/<%= wiki.id %>/private" method="post">
-            <button type="submit" class="btn btn-primary">Private</button>
-          </form>
-          <%  } else { %>
-            <form style="display:initial" action="/wikis/<%= wiki.id %>/public" method="post">
-              <button type="submit" class="btn btn-primary">public</button>
+        if(currentUser.id===wiki.userId && currentUser.isPremium() === true){
+          if (wiki.isPrivate===false){ %>
+            <form style="display:initial" action="/wikis/<%= wiki.id %>/private" method="post">
+              <button type="submit" class="btn btn-primary">Private</button>
             </form>
-        <% };};} %>
+            <%  } else { %>
+              <form style="display:initial" action="/wikis/<%= wiki.id %>/public" method="post">
+                <button type="submit" class="btn btn-primary">public</button>
+              </form>
+              <% } %>
+              <form style="display:initial" action="/wikis/<%= wiki.id %>/collab" method="post">
+                <input class="form-control" type="text" name="collaborator" aria-describedby="titleHelp" placeholder="Add Collaborators by Email">
+                <button  type="submit" class="btn btn-primary">Collaborate</button>
+              </form>
+              <%;};} %>
 
-      <p><%- wiki.body %></p>
-      <hr>
-    </main>
+              <p><%- wiki.body %></p>
+              <hr>
+            </main>
 
-    <% include ../static/partials/baseScripts.ejs %>
+            <% include ../static/partials/baseScripts.ejs %>
 
-  </body>
-  </html>
+          </body>
+          </html>

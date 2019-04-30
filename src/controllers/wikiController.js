@@ -1,16 +1,34 @@
 const wikiQueries = require("../db/wikiQueries");
 const Authorizer = require("../policies/authoroties");
 const markdown = require( "markdown" ).markdown;
+const collabQueries = require("../db/collabQueries");
+const authCollabs = require("../policies/collabPolicies")
 module.exports = {
 wikiPage(req, res, next){
-wikiQueries.getAllWikis((err,wikis) =>{
+wikiQueries.getAllWikis((err,allWikis) =>{
 if (err){
   console.log(err);
     res.redirect(500, "/");
 }else{
+  let wikis={
+    wikis:allWikis,
+    collaborators:null
+  }
+  if (req.user){
+  collabQueries.getCollaborators(req.user.id, (err,collabs)=>{
+    if(err){
+      req.flash("error", "could not find all collabs")
+      res.render("wikis/wikiPage", {wikis})
+    }else{
+    wikis.collaborators = collabs
+    res.render("wikis/wikiPage", {wikis})
+  }
+  })
+} else {
   res.render("wikis/wikiPage", {wikis})
 }
 
+}
 })
 },
 createPage(req,res,next){
@@ -78,7 +96,6 @@ update(req,res,next){
     }
   })
 },
-
 destroy(req, res, next){
      wikiQueries.deleteWiki(req, (err) => {
        if(err){

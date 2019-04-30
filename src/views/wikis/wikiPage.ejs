@@ -17,17 +17,26 @@
 
       <ul class="list-group">
         <!-- #1 -->
-        <% wikis.forEach((wiki) => {
+        <% wikis.wikis.forEach((wiki) => {
           if (wiki.isPrivate()===false){
             %>
             <li class="list-group-item">
               <a href="/wikis/<%= wiki.id %>"> <%- wiki.title %> </a>
             </li>
             <% }else{
+
               if(currentUser){
-                if(currentUser.id===wiki.userId){ %>
+                let collab;
+                wikis.collaborators.forEach((collaborator)=>{
+                  if (collaborator.wikiId===wiki.id){
+                    collab = true
+                  }
+                })
+                if(wiki.belongsToUser() || collab){ %>
+
                   <li class="list-group-item">
                     <a href="/wikis/<%= wiki.id %>"> <%- wiki.title %> </a>
+
                   </li>
                   <% }}};}) %>
             </ul>

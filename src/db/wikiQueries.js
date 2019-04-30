@@ -1,5 +1,6 @@
 const Wiki = require("./models").Wiki;
-const Authorizer = require("../policies/authoroties")
+const Authorizer = require("../policies/authoroties");
+const Collaborator = require("./models").Collaborator;
 module.exports = {
   getAllWikis(callback){
     return Wiki.all()
