@@ -57,7 +57,7 @@ deleteCollab(req, callback){
     }
     )
       .then((collab)=>{
-        
+
             collab.destroy()
             .then (()=>{
               callback(null)

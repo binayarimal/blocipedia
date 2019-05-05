@@ -5,10 +5,9 @@ module.exports = {
     collabQueries.addCollaborator(req, (err, collaborator) => {
       if(err){
         req.flash("error", "Could not add collaborator with that e-mail id");
-        res.redirect(`/wikis.${req.params.id}`);
+        res.redirect(req.headers.referer);
         console.log(err)
       } else {
-
           res.redirect(`/wikis/${req.params.id}`);
           req.flash("notice", `You've successfully added ${collaborator.email} as a collaborator`);
         }
