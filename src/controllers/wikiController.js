@@ -70,16 +70,18 @@ show(req,res, next){
       console.log(req.params.id)
     }
     else{
+      let wiki = {
+        title:markdown.toHTML(thisWiki.title),
+        body:markdown.toHTML(thisWiki.body),
+        id:thisWiki.id,
+        userId:thisWiki.userId,
+        state:thisWiki.state,
+        private:thisWiki.isPrivate(),
+        collaborators:false}
+     if(req.user){
       collabQueries.getCollaborators(req.user.id, (err,collaborators)=>{
 
-        let wiki = {
-          title:markdown.toHTML(thisWiki.title),
-          body:markdown.toHTML(thisWiki.body),
-          id:thisWiki.id,
-          userId:thisWiki.userId,
-          state:thisWiki.state,
-          private:thisWiki.isPrivate(),
-          collaborators:false}
+
           if(err){
             console.log(err)
             req.flash("error", "unable to get collabs")
@@ -89,6 +91,9 @@ show(req,res, next){
             res.render("wikis/show", {wiki})
           }
         })
+      } else {
+        res.render("wikis/show", {wiki})
+      }
       }
     })
 
