@@ -7,9 +7,9 @@
       <main class="container">
    <% include ./partials/navbar.ejs %>
         <!-- Jumbotron Header -->
-        <header class="jumbotron my-4">
-          <h1 class="display-3">Welcome to Blocipedia</h1>
-          <p class="lead">An application for users to create wikis.</p>
+        <header class="jumbotron my-4 bg-light border border-secondary" >
+          <h1 class="display-3 text-center">WikWiki</h1>
+          <p class="lead text-center">Let your knowledge speak</p>
         </header>
 
         <!-- Page Features -->
@@ -22,7 +22,7 @@
 
           <section class="col-lg-6">
             <h4 class="card-title">Premium</h4>
-            <p class="card-text">Get all the benefis as a premium user</p>
+            <p class="card-text">Create private wikis and collaborate with other members by upgrading to premium for only 15.99</p>
             <% if(currentUser){ if (currentUser.isPremium() === false){%>
             <form action="/upgrade" method="POST">
               <script
